@@ -22,7 +22,7 @@ def start(update: Update, context: CallbackContext) -> None:
     # Inline keyboard buttons
     keyboard = [
         [InlineKeyboardButton("Force Subscribe", url="https://t.me/testgroup6999")],
-        [InlineKeyboardButton("Custom Link", url="YOUR_CUSTOM_LINK")],
+        [InlineKeyboardButton("Custom Link", url="https://t.me/testgroup6999")],
         [InlineKeyboardButton("Verify", callback_data="verify")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
