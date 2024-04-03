@@ -44,12 +44,16 @@ def category_callback(update: Update, context: CallbackContext) -> None:
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
-    chat_id = query.message.chat_id
-    user_id = query.from_user.id
+    user = query.from_user
     group_id = "-1002023129341"  # Replace with your group ID
-    if context.bot.get_chat_member(group_id, user_id).status == "member":
-        start(update, context)
+    if context.bot.get_chat_member(group_id, user.id).status == "member":
+        # User is in the group, send the category list
+        keyboard = [[InlineKeyboardButton(category, callback_data=category)] for category in categories.keys()]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.message.reply_text("Please choose a category:", reply_markup=reply_markup)
+        return  # Stop further execution of the function
     else:
+        # User is not in the group, prompt them to join the group
         query.answer("You are not a member of the group. Please join the group to proceed.")
 
 # Function to handle all other messages
