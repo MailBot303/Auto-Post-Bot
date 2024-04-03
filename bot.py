@@ -21,7 +21,7 @@ def start(update: Update, context: CallbackContext) -> None:
     welcome_message = f"Hello {user.first_name}! Welcome to the Video Bot.\n\nPlease choose an option:"
     keyboard = [
         [InlineKeyboardButton("Force Subscribe", url="https://t.me/testgroup6999")],
-        [InlineKeyboardButton("Custom Link", url="https://your_custom_link_here.com")],
+        [InlineKeyboardButton("Custom Link", url="https://t.me/testgroup6999")],
         [InlineKeyboardButton("Verify", callback_data="verify")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
