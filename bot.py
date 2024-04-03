@@ -1,42 +1,59 @@
-from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-import asyncio
+import random
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
-# Your Telegram API credentials
-api_id = "25139089"
-api_hash = "45fa74a814befe61aea26e35b0fdcb6b"
-bot_token = "6635436615:AAEYg-xscSj0oI4RPM5S9NeLlI_7jJ2rj14"
+# Define your video URLs for each category
+category_videos = {
+    "Funny Videos": [
+        "https://www.example.com/funny_video1",
+        "https://www.example.com/funny_video2",
+        "https://www.example.com/funny_video3"
+    ],
+    "Educational Videos": [
+        "https://www.example.com/educational_video1",
+        "https://www.example.com/educational_video2"
+    ],
+    "Music Videos": [
+        "https://www.example.com/music_video1",
+        "https://www.example.com/music_video2",
+        "https://www.example.com/music_video3",
+        "https://www.example.com/music_video4"
+    ],
+    # Add more categories and videos as needed
+}
 
-# Your channel username without the '@' symbol
-channel_username = "your_channel_username"
+# Function to handle /start command
+def start(update: Update, context: CallbackContext) -> None:
+    buttons = [
+        [InlineKeyboardButton(category, callback_data=category)] for category in category_videos.keys()
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    update.message.reply_text('Please choose a category:', reply_markup=reply_markup)
 
-# Create a Pyrogram Client
-app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+# Function to handle category button clicks
+def category_selection(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    category = query.data
+    video_url = random.choice(category_videos[category])
+    query.answer()
+    query.message.reply_video(video_url)
 
-# Function to send a recurring message with customizable content
-async def send_recurring_message():
-    while True:
-        # Customize the message content, sticker, and button link
-        message_content = "Hello! This is a recurring message."
-        sticker_file_id = "CAACAgUAAxkBAAEBe6Rg3I9qZGXK-37XkfP2ITk8MYODiQACvgIAArhzogTN13ziW1lqHgQ"
-        button_text = "Click Here"
-        button_url = "https://example.com"
+def main():
+    # Create the Updater and pass it your bot's token
+    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
 
-        # Create an InlineKeyboardMarkup with the button
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(button_text, url=button_url)]])
+    # Get the dispatcher to register handlers
+    dispatcher = updater.dispatcher
 
-        # Send the message with sticker and button
-        await app.send_message(channel_username, text=message_content, reply_markup=keyboard, sticker=sticker_file_id)
+    # Add handlers for commands
+    dispatcher.add_handler(CommandHandler("start", start))
 
-        # Set the interval for the recurring message (in seconds)
-        await asyncio.sleep(3600)  # Adjust the interval as needed
+    # Add handler for category button clicks
+    dispatcher.add_handler(CallbackQueryHandler(category_selection))
 
-# Event handler for the bot starting
-@app.on_start()
-async def start_bot():
-    print("Bot has started!")
-    # Start the recurring message loop
-    asyncio.create_task(send_recurring_message())
+    # Start the Bot
+    updater.start_polling()
+    updater.idle()
 
-# Start the bot
-app.run()
+if __name__ == '__main__':
+    main()
