@@ -16,16 +16,19 @@ categories = {
 
 # Function to handle the /start command
 def start(update: Update, context: CallbackContext) -> None:
-    user = update.message.from_user
-    # Customize the welcome message as needed
-    welcome_message = f"Hello {user.first_name}! Welcome to the Video Bot.\n\nPlease choose an option:"
+    # Customizable text to send when the bot starts
+    start_text = "Welcome to the Video Bot!\n\nPlease choose an action:"
+
+    # Inline keyboard buttons
     keyboard = [
         [InlineKeyboardButton("Force Subscribe", url="https://t.me/testgroup6999")],
-        [InlineKeyboardButton("Custom Link", url="https://t.me/testgroup6999")],
+        [InlineKeyboardButton("Custom Link", url="YOUR_CUSTOM_LINK")],
         [InlineKeyboardButton("Verify", callback_data="verify")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text(welcome_message, reply_markup=reply_markup)
+    
+    # Send the welcome message with inline keyboard
+    update.message.reply_text(start_text, reply_markup=reply_markup)
 
 # Function to handle category button clicks
 def category_callback(update: Update, context: CallbackContext) -> None:
@@ -37,12 +40,17 @@ def category_callback(update: Update, context: CallbackContext) -> None:
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
-    user = query.from_user
-    group_id = -100123456789  # Replace with your group ID
-    if user.id in context.bot.get_chat_member(group_id, user.id):
-        start(update, context)  # Redirect to start function (show category menu)
+    chat_id = query.message.chat_id
+    user_id = query.from_user.id
+    group_id = "-1002023129341"  # Replace with your group ID
+    if context.bot.get_chat_member(group_id, user_id).status == "member":
+        start(update, context)
     else:
-        start(update, context)  # Resend the welcome message
+        update.callback_query.answer("You are not a member of the group. Please join the group to proceed.")
+
+# Function to handle all other messages
+def handle_message(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("Please use the provided buttons to interact with the bot.")
 
 # Main function
 def main() -> None:
@@ -54,6 +62,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CallbackQueryHandler(category_callback))
     dispatcher.add_handler(CallbackQueryHandler(verify_callback))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
 
     # Start the Bot
     updater.start_polling()
