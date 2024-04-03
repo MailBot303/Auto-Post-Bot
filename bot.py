@@ -59,7 +59,7 @@ def handle_message(update: Update, context: CallbackContext) -> None:
 # Main function
 def main() -> None:
     # Set up the Telegram Bot
-    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN")
+    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
     dispatcher = updater.dispatcher
 
     # Define handlers
