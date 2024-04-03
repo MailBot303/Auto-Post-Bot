@@ -1,55 +1,43 @@
+import logging
 import random
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
-# Define your video URLs for each category
-category_videos = {
-    "Funny Videos": [
-        "https://www.example.com/funny_video1",
-        "https://www.example.com/funny_video2",
-        "https://www.example.com/funny_video3"
-    ],
-    "Educational Videos": [
-        "https://www.example.com/educational_video1",
-        "https://www.example.com/educational_video2"
-    ],
-    "Music Videos": [
-        "https://www.example.com/music_video1",
-        "https://www.example.com/music_video2",
-        "https://www.example.com/music_video3",
-        "https://www.example.com/music_video4"
-    ],
-    # Add more categories and videos as needed
+# Set up logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Dictionary to store video categories and their corresponding lists of videos
+categories = {
+    'Category 1': ['video1.mp4', 'video2.mp4', 'video3.mp4'],
+    'Category 2': ['video4.mp4', 'video5.mp4', 'video6.mp4'],
+    'Category 3': ['video7.mp4', 'video8.mp4', 'video9.mp4']
 }
 
-# Function to handle /start command
+# Function to handle the /start command
 def start(update: Update, context: CallbackContext) -> None:
-    buttons = [
-        [InlineKeyboardButton(category, callback_data=category)] for category in category_videos.keys()
+    keyboard = [
+        [InlineKeyboardButton(category, callback_data=category)] for category in categories.keys()
     ]
-    reply_markup = InlineKeyboardMarkup(buttons)
+    reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Please choose a category:', reply_markup=reply_markup)
 
 # Function to handle category button clicks
-def category_selection(update: Update, context: CallbackContext) -> None:
+def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
-    video_url = random.choice(category_videos[category])
-    query.answer()
-    query.message.reply_video(video_url)
+    video = random.choice(categories[category])
+    context.bot.send_video(chat_id=query.message.chat_id, video=open(video, 'rb'))
 
-def main():
-    # Create the Updater and pass it your bot's token
-    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4", use_context=True)
-
-    # Get the dispatcher to register handlers
+# Main function
+def main() -> None:
+    # Set up the Telegram Bot
+    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
     dispatcher = updater.dispatcher
 
-    # Add handlers for commands
+    # Define handlers
     dispatcher.add_handler(CommandHandler("start", start))
-
-    # Add handler for category button clicks
-    dispatcher.add_handler(CallbackQueryHandler(category_selection))
+    dispatcher.add_handler(CallbackQueryHandler(category_callback))
 
     # Start the Bot
     updater.start_polling()
