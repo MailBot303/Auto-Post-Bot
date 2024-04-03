@@ -28,7 +28,10 @@ def start(update: Update, context: CallbackContext) -> None:
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Send the welcome message with inline keyboard
-    update.message.reply_text(start_text, reply_markup=reply_markup)
+    if update.message:
+        update.message.reply_text(start_text, reply_markup=reply_markup)
+    else:
+        update.callback_query.message.reply_text(start_text, reply_markup=reply_markup)
 
 # Function to handle category button clicks
 def category_callback(update: Update, context: CallbackContext) -> None:
@@ -47,7 +50,7 @@ def verify_callback(update: Update, context: CallbackContext) -> None:
     if context.bot.get_chat_member(group_id, user_id).status == "member":
         start(update, context)
     else:
-        update.callback_query.answer("You are not a member of the group. Please join the group to proceed.")
+        query.answer("You are not a member of the group. Please join the group to proceed.")
 
 # Function to handle all other messages
 def handle_message(update: Update, context: CallbackContext) -> None:
@@ -56,7 +59,7 @@ def handle_message(update: Update, context: CallbackContext) -> None:
 # Main function
 def main() -> None:
     # Set up the Telegram Bot
-    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
+    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN")
     dispatcher = updater.dispatcher
 
     # Define handlers
