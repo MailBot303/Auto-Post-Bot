@@ -34,8 +34,9 @@ def start(update: Update, context: CallbackContext) -> None:
 def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
-    video = random.choice(categories[category])
-    context.bot.send_video(chat_id=query.message.chat_id, video=open(video, 'rb'))
+    if category in categories:
+        video = random.choice(categories[category])
+        context.bot.send_video(chat_id=query.message.chat_id, video=open(video, 'rb'))
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
@@ -60,8 +61,8 @@ def main() -> None:
 
     # Define handlers
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CallbackQueryHandler(category_callback))
-    dispatcher.add_handler(CallbackQueryHandler(verify_callback))
+    dispatcher.add_handler(CallbackQueryHandler(category_callback, pattern='^Category'))
+    dispatcher.add_handler(CallbackQueryHandler(verify_callback, pattern='^verify$'))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
 
     # Start the Bot
