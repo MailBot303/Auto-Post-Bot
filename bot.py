@@ -40,7 +40,7 @@ def category_selection(update: Update, context: CallbackContext) -> None:
 
 def main():
     # Create the Updater and pass it your bot's token
-    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
+    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4", use_context=True)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
