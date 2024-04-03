@@ -16,20 +16,16 @@ categories = {
 
 # Function to handle the /start command
 def start(update: Update, context: CallbackContext) -> None:
-    # Send welcome message with customizable text
-    welcome_message = "Welcome to the Video Bot! Please subscribe to our group and verify yourself to access the videos."
-    update.message.reply_text(welcome_message)
-
-    # Create inline keyboard with buttons for subscription, link, and verify
+    user = update.message.from_user
+    # Customize the welcome message as needed
+    welcome_message = f"Hello {user.first_name}! Welcome to the Video Bot.\n\nPlease choose an option:"
     keyboard = [
-        [
-            InlineKeyboardButton("Subscribe to Group", url="https://t.me/your_group_link"),
-            InlineKeyboardButton("Visit Our Website", url="https://your_website_link")
-        ],
+        [InlineKeyboardButton("Force Subscribe", url="https://t.me/testgroup6999")],
+        [InlineKeyboardButton("Custom Link", url="https://your_custom_link_here.com")],
         [InlineKeyboardButton("Verify", callback_data="verify")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Choose an option:", reply_markup=reply_markup)
+    update.message.reply_text(welcome_message, reply_markup=reply_markup)
 
 # Function to handle category button clicks
 def category_callback(update: Update, context: CallbackContext) -> None:
@@ -42,16 +38,11 @@ def category_callback(update: Update, context: CallbackContext) -> None:
 def verify_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     user = query.from_user
-
-    # Check if user is a member of the subscribed group
-    if user.id in context.bot.get_chat_member_ids("-1002023129341"):
-        keyboard = [
-            [InlineKeyboardButton(category, callback_data=category)] for category in categories.keys()
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        query.message.reply_text('Please choose a category:', reply_markup=reply_markup)
+    group_id = -100123456789  # Replace with your group ID
+    if user.id in context.bot.get_chat_member(group_id, user.id):
+        start(update, context)  # Redirect to start function (show category menu)
     else:
-        query.message.reply_text("Please subscribe to our group to access the videos.")
+        start(update, context)  # Resend the welcome message
 
 # Main function
 def main() -> None:
