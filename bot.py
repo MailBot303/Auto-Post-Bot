@@ -7,11 +7,11 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Dictionary to store video categories and their corresponding groups
-categories = {
-    'Category 1': {'group_id': 'GROUP_ID_1', 'videos': ['video1.mp4', 'video2.mp4', 'video3.mp4']},
-    'Category 2': {'group_id': 'GROUP_ID_2', 'videos': ['video4.mp4', 'video5.mp4', 'video6.mp4']},
-    'Category 3': {'group_id': 'GROUP_ID_3', 'videos': ['video7.mp4', 'video8.mp4', 'video9.mp4']}
+# Dictionary to store categories and their corresponding groups
+category_groups = {
+    'Category 1': '-1002023129341',
+    'Category 2': '-1002023129341',
+    'Category 3': '-1002023129341'
 }
 
 # Function to handle the /start command
@@ -37,11 +37,26 @@ def start(update: Update, context: CallbackContext) -> None:
 def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
-    if category in categories:
-        category_info = categories[category]
-        group_id = category_info['group_id']
-        video = random.choice(category_info['videos'])
-        context.bot.forward_message(chat_id=query.message.chat_id, from_chat_id=group_id, message_id=video)
+    if category in category_groups:
+        group_id = category_groups[category]
+        # Forward a random video from the specified group
+        forward_random_video(query.message.chat_id, group_id, context.bot)
+
+# Function to forward a random video from the specified group
+def forward_random_video(chat_id: int, group_id: str, bot) -> None:
+    # Get messages from the group
+    messages = bot.get_chat_history(chat_id=group_id, limit=100)  # Adjust limit as needed
+
+    # Filter video messages
+    video_messages = [msg for msg in messages if msg.video]
+
+    if video_messages:
+        # Select a random video message
+        random_video_message = random.choice(video_messages)
+        # Forward the video message to the user
+        bot.forward_message(chat_id=chat_id, from_chat_id=group_id, message_id=random_video_message.message_id)
+    else:
+        bot.send_message(chat_id=chat_id, text="No videos found in the group.")
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
@@ -50,7 +65,7 @@ def verify_callback(update: Update, context: CallbackContext) -> None:
     group_id = "-1002023129341"  # Replace with your group ID
     if context.bot.get_chat_member(group_id, user.id).status == "member":
         # User is in the group, send the category list
-        keyboard = [[InlineKeyboardButton(category, callback_data=category)] for category in categories.keys()]
+        keyboard = [[InlineKeyboardButton(category, callback_data=category)] for category in category_groups.keys()]
         reply_markup = InlineKeyboardMarkup(keyboard)
         query.message.reply_text("Please choose a category:", reply_markup=reply_markup)
     else:
@@ -64,7 +79,7 @@ def handle_message(update: Update, context: CallbackContext) -> None:
 # Main function
 def main() -> None:
     # Set up the Telegram Bot
-    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN")
+    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
     dispatcher = updater.dispatcher
 
     # Define handlers
