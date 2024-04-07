@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 # Dictionary to store video categories and their corresponding video IDs
 categories = {
-    'Category 1': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ', 'BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ', 'BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
+    'Category 1': ['AgADhwwAAorZkFQ', 'AgADhwwAAorZkFQ', 'AgADhwwAAorZkFQ'],
     'Category 2': ['video_id_4', 'video_id_5', 'video_id_6'],
     'Category 3': ['video_id_7', 'video_id_8', 'video_id_9']
 }
