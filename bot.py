@@ -45,7 +45,7 @@ def category_callback(update: Update, context: CallbackContext) -> None:
 # Function to forward a random video from the specified group
 def forward_random_video(chat_id: int, group_id: str, bot) -> None:
     # Get messages from the group
-    messages = bot.get_chat_history(chat_id=group_id, limit=100)  # Adjust limit as needed
+    messages = bot.get_chat(group_id).get_message_history(limit=100)  # Adjust limit as needed
 
     # Filter video messages
     video_messages = [msg for msg in messages if msg.video]
