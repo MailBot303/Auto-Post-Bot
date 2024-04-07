@@ -7,11 +7,11 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Dictionary to store video categories and their corresponding lists of video IDs
+# Dictionary to store video categories and their corresponding video IDs
 categories = {
     'Category 1': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ', 'BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ', 'BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
-    'Category 2': ['video4_id', 'video5_id', 'video6_id'],
-    'Category 3': ['video7_id', 'video8_id', 'video9_id']
+    'Category 2': ['video_id_4', 'video_id_5', 'video_id_6'],
+    'Category 3': ['video_id_7', 'video_id_8', 'video_id_9']
 }
 
 # Function to handle the /start command
@@ -39,8 +39,8 @@ def category_callback(update: Update, context: CallbackContext) -> None:
     category = query.data
     if category in categories:
         video_ids = categories[category]
-        video_id = random.choice(video_ids)
-        context.bot.send_video(chat_id=query.message.chat_id, video=video_id)
+        for video_id in video_ids:
+            context.bot.send_video(chat_id=query.message.chat_id, video=video_id)
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
