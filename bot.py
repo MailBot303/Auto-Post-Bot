@@ -1,5 +1,6 @@
 import logging
 import random
+import time
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, MessageHandler, Filters
 
@@ -10,9 +11,12 @@ logger = logging.getLogger(__name__)
 # Dictionary to store video categories and their corresponding lists of file IDs
 categories = {
     'Category 1': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
-    'Category 2': ['file_id4', 'file_id5', 'file_id6'],
-    'Category 3': ['file_id7', 'file_id8', 'file_id9']
+    'Category 2': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
+    'Category 3': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ']
 }
+
+# Customizable message to send with each video
+custom_message = "This is a custom message that will be sent with the video."
 
 # Function to handle the /start command
 def start(update: Update, context: CallbackContext) -> None:
@@ -38,8 +42,15 @@ def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
     if category in categories:
+        # Choose a random video from the category
         file_id = random.choice(categories[category])
-        context.bot.send_document(chat_id=query.message.chat_id, document=file_id)
+        
+        # Delay sending the video
+        time.sleep(5)
+        
+        # Send the custom message with the video
+        context.bot.send_message(chat_id=query.message.chat_id, text=custom_message)
+        context.bot.send_video(chat_id=query.message.chat_id, video=file_id)
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
