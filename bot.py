@@ -7,11 +7,11 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Dictionary to store video categories and their corresponding lists of videos
+# Dictionary to store video categories and their corresponding groups
 categories = {
-    'Category 1': ['video1.mp4', 'video2.mp4', 'video3.mp4'],
-    'Category 2': ['video4.mp4', 'video5.mp4', 'video6.mp4'],
-    'Category 3': ['video7.mp4', 'video8.mp4', 'video9.mp4']
+    'Category 1': {'group_id': 'GROUP_ID_1', 'videos': ['video1.mp4', 'video2.mp4', 'video3.mp4']},
+    'Category 2': {'group_id': 'GROUP_ID_2', 'videos': ['video4.mp4', 'video5.mp4', 'video6.mp4']},
+    'Category 3': {'group_id': 'GROUP_ID_3', 'videos': ['video7.mp4', 'video8.mp4', 'video9.mp4']}
 }
 
 # Function to handle the /start command
@@ -38,8 +38,10 @@ def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
     if category in categories:
-        video = random.choice(categories[category])
-        context.bot.send_video(chat_id=query.message.chat_id, video=open(video, 'rb'))
+        category_info = categories[category]
+        group_id = category_info['group_id']
+        video = random.choice(category_info['videos'])
+        context.bot.forward_message(chat_id=query.message.chat_id, from_chat_id=group_id, message_id=video)
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
@@ -51,7 +53,6 @@ def verify_callback(update: Update, context: CallbackContext) -> None:
         keyboard = [[InlineKeyboardButton(category, callback_data=category)] for category in categories.keys()]
         reply_markup = InlineKeyboardMarkup(keyboard)
         query.message.reply_text("Please choose a category:", reply_markup=reply_markup)
-        return  # Stop further execution of the function
     else:
         # User is not in the group, prompt them to join the group
         query.answer("You are not a member of the group. Please join the group to proceed.")
@@ -63,7 +64,7 @@ def handle_message(update: Update, context: CallbackContext) -> None:
 # Main function
 def main() -> None:
     # Set up the Telegram Bot
-    updater = Updater("7148632757:AAFzYQ3eIQQg_TbKB50nLlTip8QjAVGkow4")
+    updater = Updater("YOUR_TELEGRAM_BOT_TOKEN")
     dispatcher = updater.dispatcher
 
     # Define handlers
