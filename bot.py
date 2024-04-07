@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 # Dictionary to store video categories and their corresponding lists of file IDs
 categories = {
-    'Category 1': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
-    'Category 2': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
-    'Category 3': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ']
+    'Desi': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
+    'Tamil': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
+    'Adult': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ']
 }
 
 # Customizable message to send with each video
@@ -21,12 +21,12 @@ custom_message = "This is a custom message that will be sent with the video."
 # Function to handle the /start command
 def start(update: Update, context: CallbackContext) -> None:
     # Customizable text to send when the bot starts
-    start_text = "Welcome to the Video Bot!\n\nPlease choose an action:"
+    start_text = "Complete The Task To Use The Bot!\n\nClick Verify After Complete:"
 
     # Inline keyboard buttons
     keyboard = [
-        [InlineKeyboardButton("Force Subscribe", url="https://t.me/testgroup6999")],
-        [InlineKeyboardButton("Custom Link", url="https://t.me/testgroup6999")],
+        [InlineKeyboardButton("Join Channel", url="https://t.me/testgroup6999")],
+        [InlineKeyboardButton("Share To 3 Groups", url="https://t.me/testgroup6999")],
         [InlineKeyboardButton("Verify", callback_data="verify")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
