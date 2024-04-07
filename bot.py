@@ -7,11 +7,11 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Dictionary to store video categories and their corresponding video IDs
+# Dictionary to store video categories and their corresponding lists of file IDs
 categories = {
-    'Category 1': ['AgADhwwAAorZkFQ', 'AgADhwwAAorZkFQ', 'AgADhwwAAorZkFQ'],
-    'Category 2': ['video_id_4', 'video_id_5', 'video_id_6'],
-    'Category 3': ['video_id_7', 'video_id_8', 'video_id_9']
+    'Category 1': ['BAACAgUAAxkBAAI6dmYSN8UJaH1Rgxsm39vU7BQagxRnAAKHDAACitmQVKgTojm6L4N3NAQ'],
+    'Category 2': ['file_id4', 'file_id5', 'file_id6'],
+    'Category 3': ['file_id7', 'file_id8', 'file_id9']
 }
 
 # Function to handle the /start command
@@ -38,9 +38,8 @@ def category_callback(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     category = query.data
     if category in categories:
-        video_ids = categories[category]
-        for video_id in video_ids:
-            context.bot.send_video(chat_id=query.message.chat_id, video=video_id)
+        file_id = random.choice(categories[category])
+        context.bot.send_document(chat_id=query.message.chat_id, document=file_id)
 
 # Function to handle verify button clicks
 def verify_callback(update: Update, context: CallbackContext) -> None:
